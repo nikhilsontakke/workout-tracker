@@ -12,39 +12,21 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#0d0d0d;
-  --bg2:#161616;
-  --bg3:#1e1e1e;
-  --bg4:#252525;
-  --border:rgba(255,255,255,0.07);
-  --border2:rgba(255,255,255,0.12);
-  --text:#f5f5f5;
-  --text2:#a0a0a0;
-  --text3:#555;
-  --accent:#e8ff6e;
-  --accent-dark:#d4eb5a;
-  --accent-dim:rgba(232,255,110,0.08);
-  --red:#ff6b6b;
-  --red-dim:rgba(255,107,107,0.08);
-  --blue:#6b9fff;
-  --blue-dim:rgba(107,159,255,0.08);
-  --green:#6bffb8;
-  --green-dim:rgba(107,255,184,0.08);
-  --amber:#ffb86b;
-  --amber-dim:rgba(255,184,107,0.08);
-  --purple:#b86bff;
-  --purple-dim:rgba(184,107,255,0.08);
-  --radius:16px;
-  --radius-sm:10px;
-  --radius-xs:7px;
-  --safe-top:env(safe-area-inset-top,0px);
-  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#0d0d0d;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#f5f5f5;--text2:#a0a0a0;--text3:#555;
+  --accent:#e8ff6e;--accent-dark:#d4eb5a;--accent-dim:rgba(232,255,110,0.08);
+  --red:#ff6b6b;--red-dim:rgba(255,107,107,0.08);
+  --blue:#6b9fff;--blue-dim:rgba(107,159,255,0.08);
+  --green:#6bffb8;--green-dim:rgba(107,255,184,0.08);
+  --amber:#ffb86b;--amber-dim:rgba(255,184,107,0.08);
+  --purple:#b86bff;--purple-dim:rgba(184,107,255,0.08);
+  --radius:16px;--radius-sm:10px;--radius-xs:7px;
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
   --sidebar:260px;
 }
 html{background:var(--bg);height:100%}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-
-/* LAYOUT */
 .layout{display:flex;min-height:100vh}
 
 /* SIDEBAR */
@@ -60,8 +42,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .sb-btn svg{width:17px;height:17px;flex-shrink:0;stroke-width:1.8}
 .sb-signout{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius-sm);border:none;background:transparent;color:var(--text3);font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;transition:all .15s;width:100%;margin-top:8px}
 .sb-signout:hover{color:var(--red);background:var(--red-dim)}
-
-/* MAIN */
 .main{flex:1;margin-left:var(--sidebar);min-height:100vh}
 .content{max-width:660px;width:100%;margin:0 auto;padding:40px 32px 60px}
 
@@ -95,9 +75,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .card-label{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin-bottom:13px;display:flex;align-items:center;gap:6px}
 .card-label svg{width:12px;height:12px}
 
-/* DATE */
-input[type=date]{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;transition:border-color .15s}
-input[type=date]:focus{border-color:var(--accent)}
+/* DATE PICKER — 3 tap-friendly scrollers */
+.date-selectors{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.date-sel-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+.date-sel-label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
+.date-sel{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;padding:14px 8px;text-align:center;outline:none;-webkit-appearance:none;appearance:none;cursor:pointer;transition:border-color .15s}
+.date-sel:focus{border-color:var(--accent)}
 
 /* DAY GRID */
 .day-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
@@ -139,7 +122,15 @@ input[type=date]:focus{border-color:var(--accent)}
 .add-ex-btn{width:100%;margin-top:10px;padding:11px;border:1px dashed var(--border2);border-radius:var(--radius-sm);background:transparent;color:var(--text3);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
 .add-ex-btn:hover{border-color:var(--accent);color:var(--accent)}
 
-/* CARDIO */
+/* CARDIO TOGGLE */
+.cardio-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0}
+.cardio-toggle{position:relative;width:38px;height:22px;flex-shrink:0}
+.cardio-toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:var(--bg4);border-radius:11px;border:1px solid var(--border2);cursor:pointer;transition:all .2s}
+.toggle-track::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:var(--text3);top:2px;left:2px;transition:all .2s}
+.cardio-toggle input:checked+.toggle-track{background:var(--accent-dim);border-color:var(--accent)}
+.cardio-toggle input:checked+.toggle-track::after{background:var(--accent);transform:translateX(16px)}
+.cardio-fields{margin-top:14px}
 .cardio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .cf{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 10px;text-align:center;transition:border-color .15s}
 .cf:focus-within{border-color:var(--accent)}
@@ -147,7 +138,27 @@ input[type=date]:focus{border-color:var(--accent)}
 .cf input{width:100%;background:transparent;border:none;font-family:'Inter',monospace;font-size:22px;font-weight:500;color:var(--text);text-align:center;outline:none}
 .cf .unit{font-size:10px;color:var(--text3);margin-top:3px}
 
-/* BUTTONS */
+/* REST TIMER */
+.timer-wrap{display:flex;flex-direction:column;align-items:center;padding:10px 0 4px}
+.timer-ring-wrap{position:relative;width:140px;height:140px;margin-bottom:14px}
+.timer-svg{transform:rotate(-90deg)}
+.timer-track{fill:none;stroke:var(--bg4);stroke-width:6}
+.timer-prog{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .1s linear;stroke-dasharray:408;stroke-dashoffset:408}
+.timer-prog.urgent{stroke:var(--red)}
+.timer-display{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.timer-time{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.timer-label{font-size:10px;color:var(--text3);margin-top:3px;font-weight:500;letter-spacing:.05em;text-transform:uppercase}
+.timer-presets{display:flex;gap:8px;margin-bottom:14px}
+.timer-preset{padding:7px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;font-family:'Space Grotesk',sans-serif}
+.timer-preset:active{transform:scale(.95)}
+.timer-preset.active-preset{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.timer-controls{display:flex;gap:10px}
+.timer-btn{padding:10px 22px;border-radius:var(--radius-sm);border:none;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.timer-start{background:var(--accent);color:#0d0d0d}
+.timer-start:active{transform:scale(.97)}
+.timer-reset{background:var(--bg3);color:var(--text2);border:1px solid var(--border2)}
+
+/* SAVE */
 .save-row{display:flex;gap:10px;margin-top:4px}
 .save-btn{flex:1;padding:15px;border-radius:var(--radius);border:none;background:var(--accent);color:#0d0d0d;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
 .save-btn:active{transform:scale(.98);background:var(--accent-dark)}
@@ -178,7 +189,7 @@ input[type=date]:focus{border-color:var(--accent)}
 .b-BB{background:var(--blue-dim);color:var(--blue)}
 .b-LEGS{background:var(--green-dim);color:var(--green)}
 .b-CUSTOM{background:var(--purple-dim);color:var(--purple)}
-.hist-exlist{font-size:12px;color:var(--text2);line-height:1.9;margin-bottom:7px}
+.hist-exlist{font-size:12px;color:var(--text2);line-height:1.9;margin-bottom:7px;white-space:pre-line}
 .hist-cardio{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:5px}
 
 /* STATS */
@@ -280,6 +291,10 @@ input[type=date]:focus{border-color:var(--accent)}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           Stats
         </button>
+        <button class="sb-btn" id="sb-timer" onclick="showTab('timer',this,'Rest timer')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Rest timer
+        </button>
       </nav>
       <button class="sb-signout" onclick="signOut()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -295,11 +310,25 @@ input[type=date]:focus{border-color:var(--accent)}
         <div class="pane active" id="pane-log">
           <div class="page-hdr"><h1>Log workout</h1><p>Add exercises and track your sets</p></div>
 
+          <!-- DATE -->
           <div class="card">
-            <div class="card-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Session date</div>
-            <input type="date" id="session-date">
+            <div class="card-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Session date
+            </div>
+            <div class="date-selectors">
+              <div class="date-sel-wrap"><div class="date-sel-label">Day</div><select class="date-sel" id="sel-day"></select></div>
+              <div class="date-sel-wrap"><div class="date-sel-label">Month</div><select class="date-sel" id="sel-month">
+                <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+                <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
+                <option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option>
+                <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+              </select></div>
+              <div class="date-sel-wrap"><div class="date-sel-label">Year</div><select class="date-sel" id="sel-year"></select></div>
+            </div>
           </div>
 
+          <!-- DAY TYPE -->
           <div class="card">
             <div class="card-label">Day type</div>
             <div class="day-grid">
@@ -311,18 +340,34 @@ input[type=date]:focus{border-color:var(--accent)}
             <div class="chips" id="chips"></div>
           </div>
 
+          <!-- EXERCISES -->
           <div class="card">
-            <div class="card-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>Exercises</div>
+            <div class="card-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>
+              Exercises
+            </div>
             <div id="ex-list"></div>
             <button class="add-ex-btn" onclick="addEx()">+ Add exercise</button>
           </div>
 
+          <!-- CARDIO (optional) -->
           <div class="card">
-            <div class="card-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Cardio — incline treadmill</div>
-            <div class="cardio-grid">
-              <div class="cf"><label>Duration</label><input type="number" id="c-mins" value="20" min="0" max="180" inputmode="numeric"><div class="unit">minutes</div></div>
-              <div class="cf"><label>Incline</label><input type="number" id="c-incline" value="8" min="0" max="15" inputmode="numeric"><div class="unit">percent</div></div>
-              <div class="cf"><label>Speed</label><input type="number" id="c-speed" value="5" min="0" max="20" step="0.5" inputmode="decimal"><div class="unit">km/h</div></div>
+            <div class="cardio-header">
+              <div class="card-label" style="margin-bottom:0">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Cardio — incline treadmill
+              </div>
+              <label class="cardio-toggle">
+                <input type="checkbox" id="cardio-toggle" onchange="toggleCardio(this.checked)">
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+            <div class="cardio-fields" id="cardio-fields" style="display:none">
+              <div class="cardio-grid">
+                <div class="cf"><label>Duration</label><input type="number" id="c-mins" value="20" min="0" max="180" inputmode="numeric"><div class="unit">minutes</div></div>
+                <div class="cf"><label>Incline</label><input type="number" id="c-incline" value="8" min="0" max="15" inputmode="numeric"><div class="unit">percent</div></div>
+                <div class="cf"><label>Speed</label><input type="number" id="c-speed" value="5" min="0" max="20" step="0.5" inputmode="decimal"><div class="unit">km/h</div></div>
+              </div>
             </div>
           </div>
 
@@ -354,6 +399,36 @@ input[type=date]:focus{border-color:var(--accent)}
           </div>
           <div id="stats-content"><p style="color:var(--text3);text-align:center;padding:60px 0;font-size:13px">Tap Refresh to load stats.</p></div>
         </div>
+
+        <!-- REST TIMER -->
+        <div class="pane" id="pane-timer">
+          <div class="page-hdr"><h1>Rest timer</h1><p>Time your rest between sets</p></div>
+          <div class="card">
+            <div class="timer-wrap">
+              <div class="timer-ring-wrap">
+                <svg class="timer-svg" width="140" height="140" viewBox="0 0 140 140">
+                  <circle class="timer-track" cx="70" cy="70" r="65"/>
+                  <circle class="timer-prog" id="timer-ring" cx="70" cy="70" r="65"/>
+                </svg>
+                <div class="timer-display">
+                  <div class="timer-time" id="timer-display">1:30</div>
+                  <div class="timer-label" id="timer-status-label">ready</div>
+                </div>
+              </div>
+              <div class="timer-presets">
+                <button class="timer-preset" onclick="setPreset(60)">1 min</button>
+                <button class="timer-preset active-preset" onclick="setPreset(90)">90 sec</button>
+                <button class="timer-preset" onclick="setPreset(120)">2 min</button>
+                <button class="timer-preset" onclick="setPreset(180)">3 min</button>
+              </div>
+              <div class="timer-controls">
+                <button class="timer-btn timer-start" id="timer-start-btn" onclick="toggleTimer()">Start</button>
+                <button class="timer-btn timer-reset" onclick="resetTimer()">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </main>
   </div>
@@ -372,6 +447,10 @@ input[type=date]:focus{border-color:var(--accent)}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         Stats
       </button>
+      <button class="mn-btn" id="mn-timer" onclick="showTab('timer',this,'Rest timer')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Timer
+      </button>
     </div>
   </nav>
 </div>
@@ -380,7 +459,7 @@ input[type=date]:focus{border-color:var(--accent)}
 <script>
 const CLIENT_ID='617002219280-2injmg1ri4731rvkhu1ihbjsfk2rjacc.apps.googleusercontent.com';
 const SCOPES='https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.readonly';
-const SS_TITLE='workout-log';
+const SS_TITLE='Workout Log';
 const SH='Sessions';
 const HEADERS=['Date','Day Type','Exercise','Details','Sets (reps)','Total Volume (kg)'];
 
@@ -391,18 +470,40 @@ const DAY_EX={
   CUSTOM:[]
 };
 
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 let tok=null,ssId=null,selDay=null,exs=[];
 
-function initDates(){
-  const d=new Date(),s=d.toISOString().slice(0,10);
-  const lbl=d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
-  document.getElementById('session-date').value=s;
+/* ── DATE SELECTORS ── */
+function initDateSelectors(){
+  const now=new Date();
+  const selD=document.getElementById('sel-day');
+  const selY=document.getElementById('sel-year');
+  const selM=document.getElementById('sel-month');
+  for(let i=1;i<=31;i++){const o=document.createElement('option');o.value=i;o.textContent=i;selD.appendChild(o);}
+  for(let y=now.getFullYear();y>=2020;y--){const o=document.createElement('option');o.value=y;o.textContent=y;selY.appendChild(o);}
+  selD.value=now.getDate();
+  selM.value=now.getMonth()+1;
+  selY.value=now.getFullYear();
+  const lbl=now.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
   const sd=document.getElementById('sb-date'),md=document.getElementById('mob-date');
   if(sd)sd.textContent=lbl;if(md)md.textContent=lbl;
 }
 
+function getSelectedDate(){
+  const d=document.getElementById('sel-day').value;
+  const m=String(document.getElementById('sel-month').value).padStart(2,'0');
+  const y=document.getElementById('sel-year').value;
+  return `${y}-${m}-${String(d).padStart(2,'0')}`;
+}
+
+/* ── CARDIO TOGGLE ── */
+function toggleCardio(on){
+  document.getElementById('cardio-fields').style.display=on?'block':'none';
+}
+
+/* ── AUTH ── */
 window.onload=()=>{
-  initDates();
+  initDateSelectors();
   ssId=localStorage.getItem('ssId')||null;
   tok=localStorage.getItem('tok')||null;
   if(tok)showApp();
@@ -435,7 +536,7 @@ function setStatus(msg,type){
 
 function showTab(name,btn,title){
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
-  ['sb-log','sb-history','sb-stats','mn-log','mn-history','mn-stats'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+  ['sb-log','sb-history','sb-stats','sb-timer','mn-log','mn-history','mn-stats','mn-timer'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
   document.getElementById('pane-'+name).classList.add('active');
   const sb=document.getElementById('sb-'+name),mn=document.getElementById('mn-'+name);
   if(sb)sb.classList.add('active');if(mn)mn.classList.add('active');
@@ -480,6 +581,7 @@ function renderEx(){
   });
 }
 
+/* ── SHEETS API ── */
 async function api(method,url,body){
   const r=await fetch(url,{method,headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
   if(r.status===401){localStorage.removeItem('tok');tok=null;location.reload();throw new Error('Session expired');}
@@ -502,19 +604,21 @@ async function getSheet(){
 }
 
 async function saveSession(){
-  const date=document.getElementById('session-date').value;
+  const date=getSelectedDate();
   const type=selDay||'CUSTOM';
-  const mins=parseFloat(document.getElementById('c-mins').value)||0;
-  const inc=parseFloat(document.getElementById('c-incline').value)||0;
-  const spd=parseFloat(document.getElementById('c-speed').value)||0;
+  const cardioOn=document.getElementById('cardio-toggle').checked;
+  const mins=cardioOn?(parseFloat(document.getElementById('c-mins').value)||0):0;
+  const inc=cardioOn?(parseFloat(document.getElementById('c-incline').value)||0):0;
+  const spd=cardioOn?(parseFloat(document.getElementById('c-speed').value)||0):0;
   const valid=exs.filter(e=>e.name.trim()&&e.sets.length);
-  if(!valid.length&&mins===0){setStatus('Add at least one exercise with sets, or some cardio.','warning');return;}
+  if(!valid.length&&!cardioOn){setStatus('Add at least one exercise with sets, or enable cardio.','warning');return;}
   const btn=document.getElementById('save-btn');btn.disabled=true;
   setStatus('Saving to Google Sheets...','info');
   try{
     const sid=await getSheet();
     const rows=valid.map(ex=>[date,type,ex.name,`${ex.kg}kg`,ex.sets.map(s=>s.reps).join('/'),ex.kg*ex.sets.reduce((a,s)=>a+s.reps,0)]);
-    if(mins>0) rows.push([date,type,'Cardio — treadmill',`${inc}% incline · ${spd} km/h`,`${mins} min`,'']);
+    if(cardioOn&&mins>0) rows.push([date,type,'Cardio — treadmill',`${inc}% incline · ${spd} km/h`,`${mins} min`,'']);
+    if(!rows.length){setStatus('Nothing to save.','warning');btn.disabled=false;return;}
     await api('POST',`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${SH}!A1:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,{values:rows});
     setStatus(`Saved — ${rows.length} row${rows.length>1?'s':''} added!`,'success');
     setTimeout(()=>setStatus(''),3000);clearForm();
@@ -527,15 +631,15 @@ async function loadHistory(){
   el.innerHTML='<p style="color:var(--text3);text-align:center;padding:60px 0;font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px"><span class="spinner"></span> Loading...</p>';
   try{
     const sid=await getSheet();
-    const d=await api('GET',`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${SH}!A2:I?majorDimension=ROWS`);
+    const d=await api('GET',`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${SH}!A2:F?majorDimension=ROWS`);
     const rows=(d.values||[]).reverse();
     if(!rows.length){el.innerHTML='<p style="color:var(--text3);text-align:center;padding:60px 0;font-size:13px">No sessions yet.</p>';return;}
     const g={};
     rows.forEach(r=>{
       const k=r[0]+'_'+r[1];
       if(!g[k])g[k]={date:r[0],type:r[1],exs:[],cardio:null};
-      if(r[2]==='Cardio — treadmill') g[k].cardio={detail:r[3],duration:r[4]};
-      else if(r[2]) g[k].exs.push({name:r[2],detail:r[3],sets:r[4]});
+      if(r[2]==='Cardio — treadmill')g[k].cardio={detail:r[3],duration:r[4]};
+      else if(r[2])g[k].exs.push({name:r[2],detail:r[3],sets:r[4]});
     });
     el.innerHTML=Object.values(g).map(s=>`
       <div class="hist-item">
@@ -551,7 +655,7 @@ async function loadStats(){
   el.innerHTML='<p style="color:var(--text3);text-align:center;padding:60px 0;font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px"><span class="spinner"></span> Crunching...</p>';
   try{
     const sid=await getSheet();
-    const d=await api('GET',`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${SH}!A2:I?majorDimension=ROWS`);
+    const d=await api('GET',`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${SH}!A2:F?majorDimension=ROWS`);
     const rows=d.values||[];
     if(!rows.length){el.innerHTML='<p style="color:var(--text3);text-align:center;padding:60px 0;font-size:13px">No data yet.</p>';return;}
     const sess=new Set(),cByS={},tc={},ev={};let tS=0,tV=0;
@@ -561,7 +665,7 @@ async function loadStats(){
       if(r[2]==='Cardio — treadmill'){
         const dur=parseFloat((r[4]||'').replace(/[^0-9.]/g,''))||0;
         cByS[k]=(cByS[k]||0)+dur;
-      } else if(r[2]){tS++;const v=parseFloat(r[5])||0;tV+=v;ev[r[2]]=(ev[r[2]]||0)+v;}
+      }else if(r[2]){tS++;const v=parseFloat(r[5])||0;tV+=v;ev[r[2]]=(ev[r[2]]||0)+v;}
     });
     const tC=Object.values(cByS).reduce((a,b)=>a+b,0),total=sess.size;
     const topEx=Object.entries(ev).sort((a,b)=>b[1]-a[1]).slice(0,5);
@@ -571,7 +675,7 @@ async function loadStats(){
         <div class="metric"><div class="m-label">Sessions</div><div class="m-val">${total}</div></div>
         <div class="metric"><div class="m-label">Total sets</div><div class="m-val">${tS}</div></div>
         <div class="metric"><div class="m-label">Volume</div><div class="m-val">${Math.round(tV).toLocaleString()}</div><div class="m-unit">kg lifted</div></div>
-        <div class="metric"><div class="m-label">Cardio</div><div class="m-val">${Math.round(tC)}</div><div class="m-unit">minutes</div></div>
+        <div class="metric"><div class="m-label">Cardio</div><div class="m-val">${Math.round(tC)}</div><div class="m-unit">minutes total</div></div>
       </div>
       ${total>0?`<div class="card"><div class="card-label">Session split</div>${tRows.map(([t,c])=>`<div class="bar-row"><span class="b-label">${t}</span><div class="b-track"><div class="b-fill f-${t}" style="width:${Math.round(c/total*100)}%"></div></div><span class="b-count">${c}×</span></div>`).join('')}</div>`:''}
       ${topEx.length?`<div class="card"><div class="card-label">Top exercises by volume</div>${topEx.map(([n,v],i)=>`<div class="rank-row"><span class="r-n">${i+1}</span><span class="r-name">${n}</span><span class="r-vol">${Math.round(v).toLocaleString()} kg</span></div>`).join('')}</div>`:''}
@@ -580,13 +684,70 @@ async function loadStats(){
 }
 
 function clearForm(){
-  exs=[];renderEx();initDates();
+  exs=[];renderEx();initDateSelectors();
+  document.getElementById('cardio-toggle').checked=false;
+  document.getElementById('cardio-fields').style.display='none';
   document.getElementById('c-mins').value=20;
   document.getElementById('c-incline').value=8;
   document.getElementById('c-speed').value=5;
   document.querySelectorAll('.day-opt').forEach(el=>el.className='day-opt');
   document.getElementById('chips').innerHTML='';
   selDay=null;
+}
+
+/* ── REST TIMER ── */
+const CIRCUMFERENCE=408;
+let timerDuration=90,timerRemaining=90,timerInterval=null,timerRunning=false;
+
+function setPreset(secs){
+  timerDuration=secs;timerRemaining=secs;timerRunning=false;
+  clearInterval(timerInterval);
+  document.querySelectorAll('.timer-preset').forEach(b=>b.classList.remove('active-preset'));
+  event.target.classList.add('active-preset');
+  updateTimerDisplay();
+  document.getElementById('timer-start-btn').textContent='Start';
+}
+
+function toggleTimer(){
+  if(timerRunning){
+    clearInterval(timerInterval);timerRunning=false;
+    document.getElementById('timer-start-btn').textContent='Resume';
+    document.getElementById('timer-status-label').textContent='paused';
+  } else {
+    if(timerRemaining<=0){timerRemaining=timerDuration;}
+    timerRunning=true;
+    document.getElementById('timer-start-btn').textContent='Pause';
+    document.getElementById('timer-status-label').textContent='resting';
+    timerInterval=setInterval(()=>{
+      timerRemaining--;
+      updateTimerDisplay();
+      if(timerRemaining<=0){
+        clearInterval(timerInterval);timerRunning=false;
+        document.getElementById('timer-start-btn').textContent='Start';
+        document.getElementById('timer-status-label').textContent='done!';
+        if('vibrate' in navigator)navigator.vibrate([200,100,200]);
+      }
+    },1000);
+  }
+}
+
+function resetTimer(){
+  clearInterval(timerInterval);timerRunning=false;
+  timerRemaining=timerDuration;
+  document.getElementById('timer-start-btn').textContent='Start';
+  document.getElementById('timer-status-label').textContent='ready';
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay(){
+  const m=Math.floor(timerRemaining/60);
+  const s=timerRemaining%60;
+  document.getElementById('timer-display').textContent=`${m}:${String(s).padStart(2,'0')}`;
+  const ring=document.getElementById('timer-ring');
+  const frac=timerRemaining/timerDuration;
+  const offset=CIRCUMFERENCE-(frac*CIRCUMFERENCE);
+  ring.style.strokeDashoffset=offset;
+  ring.classList.toggle('urgent',timerRemaining<=10&&timerRemaining>0);
 }
 </script>
 </body>
