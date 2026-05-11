@@ -118,9 +118,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .sets-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
 .set-pill{display:inline-flex;align-items:center;gap:3px;padding:5px 9px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);cursor:pointer;transition:all .15s;-webkit-user-select:none;user-select:none}
 .set-pill.done{border-color:var(--green);background:var(--green-dim)}
-.set-pill input{width:24px;background:transparent;border:none;font-family:'Inter',monospace;font-size:12px;color:inherit;text-align:center;outline:none}
+.set-pill input{width:28px;background:transparent;border:none;font-family:'Inter',monospace;font-size:12px;color:inherit;text-align:center;outline:none}
+.set-pill input::placeholder{color:var(--text3);font-size:11px}
 .set-pill span{font-size:10px;color:var(--text3)}
 .set-pill.done span{color:var(--green)}
+.set-num{font-size:9px;font-weight:700;color:var(--text3);min-width:8px;margin-right:1px}
+.set-pill.done .set-num{color:var(--green)}
 .add-set{padding:5px 10px;border-radius:20px;border:1px dashed var(--border2);background:transparent;font-size:11px;color:var(--text3);cursor:pointer;transition:all .15s}
 .add-set:hover{border-color:var(--text2);color:var(--text2)}
 .add-ex-btn{width:100%;margin-top:10px;padding:11px;border:1px dashed var(--border2);border-radius:var(--radius-sm);background:transparent;color:var(--text3);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
@@ -417,7 +420,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
             <div class="cardio-header">
               <div class="card-label" style="margin-bottom:0">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                Cardio — incline treadmill
+                Cardio — treadmill
               </div>
               <label class="cardio-toggle">
                 <input type="checkbox" id="cardio-toggle" onchange="toggleCardio(this.checked)">
@@ -477,10 +480,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
                 </div>
               </div>
               <div class="timer-presets">
-                <button class="timer-preset" onclick="setPreset(60)">1 min</button>
-                <button class="timer-preset active-preset" onclick="setPreset(90)">90 sec</button>
-                <button class="timer-preset" onclick="setPreset(120)">2 min</button>
-                <button class="timer-preset" onclick="setPreset(180)">3 min</button>
+                <button class="timer-preset" onclick="setPreset(60,this)">1 min</button>
+                <button class="timer-preset active-preset" onclick="setPreset(90,this)">90 sec</button>
+                <button class="timer-preset" onclick="setPreset(120,this)">2 min</button>
+                <button class="timer-preset" onclick="setPreset(180,this)">3 min</button>
               </div>
               <div class="timer-controls">
                 <button class="timer-btn timer-start" id="timer-start-btn" onclick="toggleTimer()">Start</button>
@@ -569,9 +572,11 @@ function loadManageData() {
 }
 
 function saveManageData() {
-  localStorage.setItem('customDayTypes',  JSON.stringify(customDayTypes));
-  localStorage.setItem('customExercises', JSON.stringify(customExercises));
-  localStorage.setItem('commonExercises', JSON.stringify(commonExercises));
+  try {
+    localStorage.setItem('customDayTypes',  JSON.stringify(customDayTypes));
+    localStorage.setItem('customExercises', JSON.stringify(customExercises));
+    localStorage.setItem('commonExercises', JSON.stringify(commonExercises));
+  } catch(e) { setStatus('Storage full — custom data may not have saved.','warning'); }
 }
 
 // All day types (defaults + user-created)
@@ -616,7 +621,8 @@ function badgeStyle(code) {
    APP STATE
    ═══════════════════════════════════════════ */
 let tok = null, ssId = null, selDay = null, exs = [];
-let newTypeColor = 'red'; // selected color when adding new day type
+let newTypeColor = 'red';
+let _histLoaded = false, _statsLoaded = false;
 
 /* ═══════════════════════════════════════════
    DATE SELECTOR
@@ -685,6 +691,8 @@ function showTab(name, btn, title) {
   btn.classList.add('active');
   const mt = document.getElementById('mob-title'); if(mt) mt.textContent = title;
   if (name === 'manage') renderManageTab();
+  if (name === 'history' && !_histLoaded) { _histLoaded = true; loadHistory(); }
+  if (name === 'stats'   && !_statsLoaded) { _statsLoaded = true; loadStats(); }
 }
 
 /* ═══════════════════════════════════════════
@@ -696,7 +704,7 @@ function renderDayGrid() {
   const types = getAllDayTypes();
   grid.innerHTML = types.map(t => `
     <div class="day-opt" id="d-${t.code}" onclick="selectDay('${t.code}')">
-      <div class="day-code">${t.code === 'CUSTOM' ? '+' : t.code}</div>
+      <div class="day-code">${t.code}</div>
       <div class="day-desc">${t.desc}</div>
     </div>`).join('');
   // Re-apply selection state
@@ -720,7 +728,10 @@ function selectDay(type) {
     const b = document.createElement('button');
     b.className = 'chip'; b.textContent = ex;
     b.onclick = () => {
-      if (!exs.find(e => e.name === ex)) { exs.push({name:ex,kg:0,sets:[]}); renderEx(); }
+      if (!exs.find(e => e.name === ex)) {
+        exs.push({name:ex,kg:0,sets:[]}); renderEx();
+        document.getElementById('ex-list').scrollIntoView({behavior:'smooth',block:'nearest'});
+      }
       b.classList.add('added');
     };
     wrap.appendChild(b);
@@ -733,7 +744,7 @@ function selectDay(type) {
 function toggleCardio(on) { document.getElementById('cardio-fields').style.display = on ? 'block' : 'none'; }
 function addEx()         { exs.push({name:'',kg:0,sets:[]}); renderEx(); }
 function delEx(i)        { exs.splice(i,1); renderEx(); }
-function addSet(i)       { exs[i].sets.push({reps:12,done:false}); renderEx(); }
+function addSet(i)       { exs[i].sets.push({reps:0,done:false}); renderEx(); }
 function togSet(i,j)     { exs[i].sets[j].done = !exs[i].sets[j].done; renderEx(); }
 function setReps(i,j,v)  { exs[i].sets[j].reps = parseInt(v)||0; }
 
@@ -750,7 +761,7 @@ function renderEx() {
         <button class="del-ex" onclick="delEx(${i})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
       </div>
       <div class="sets-row">
-        ${ex.sets.map((s,j) => `<button class="set-pill${s.done?' done':''}" onclick="togSet(${i},${j})"><input type="number" value="${s.reps}" min="1" max="100" inputmode="numeric" onclick="event.stopPropagation()" oninput="setReps(${i},${j},this.value)"><span>r</span></button>`).join('')}
+        ${ex.sets.map((s,j) => `<button class="set-pill${s.done?' done':''}" onclick="togSet(${i},${j})"><span class="set-num">${j+1}</span><input type="number" value="${s.reps||''}" min="1" max="100" inputmode="numeric" placeholder="—" onclick="event.stopPropagation()" oninput="setReps(${i},${j},this.value)"><span>r</span></button>`).join('')}
         <button class="add-set" onclick="addSet(${i})">+ set</button>
       </div>`;
     el.appendChild(d);
@@ -797,7 +808,8 @@ async function saveSession() {
     if (!rows.length) { setStatus('Nothing to save.','warning'); btn.disabled=false; return; }
     await api('POST',`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${SH}!A1:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,{values:rows});
     setStatus(`Saved — ${rows.length} row${rows.length>1?'s':''} added!`,'success');
-    setTimeout(()=>setStatus(''),3000); clearForm();
+    _histLoaded = false; _statsLoaded = false;
+    setTimeout(()=>{setStatus('');clearForm(true);},3000);
   } catch(e) { setStatus('Save failed: '+e.message,'error'); }
   btn.disabled = false;
 }
@@ -829,7 +841,8 @@ async function loadHistory() {
   } catch(e) { el.innerHTML=`<p style="color:var(--red);text-align:center;padding:24px;font-size:13px">${e.message}</p>`; }
 }
 
-function clearForm() {
+function clearForm(force = false) {
+  if (!force && exs.length > 0 && !confirm('Clear your workout?')) return;
   exs = []; renderEx(); selDay = null;
   const now = new Date();
   document.getElementById('sel-date').value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
@@ -1042,7 +1055,7 @@ function epley(w,r){return r<=1?w:Math.round(w*(1+r/30));}
 function parseWeight(s){const m=(s||'').match(/(\d+\.?\d*)\s*kg/);return m?parseFloat(m[1]):0;}
 function parseMaxReps(s){if(!s)return 0;return Math.max(0,...s.split('/').map(x=>parseInt(x)||0));}
 function deltaClass(d){return d>0?'delta-up':d<0?'delta-down':'delta-same';}
-function deltaStr(d,u=''){return d===0?'—':(d>0?'▲ +:':'▼ ')+Math.abs(d)+u;}
+function deltaStr(d,u=''){return d===0?'—':(d>0?'▲ +':'▼ ')+Math.abs(d)+u;}
 
 const _charts={};
 function mkChart(id,cfg){if(_charts[id]){_charts[id].destroy();delete _charts[id];}const c=document.getElementById(id);if(!c)return;_charts[id]=new Chart(c,cfg);}
@@ -1170,10 +1183,10 @@ function updateExCharts(name) {
 const CIRCUMFERENCE=408;
 let timerDuration=90,timerRemaining=90,timerInterval=null,timerRunning=false;
 
-function setPreset(secs){
+function setPreset(secs,btn){
   timerDuration=secs;timerRemaining=secs;timerRunning=false;clearInterval(timerInterval);
   document.querySelectorAll('.timer-preset').forEach(b=>b.classList.remove('active-preset'));
-  event.target.classList.add('active-preset');
+  btn.classList.add('active-preset');
   updateTimerDisplay();document.getElementById('timer-start-btn').textContent='Start';
 }
 function toggleTimer(){
